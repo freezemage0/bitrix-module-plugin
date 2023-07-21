@@ -1,0 +1,23 @@
+{
+  "name": "freezemage0/bitrix-composer-plugin",
+  "description": "Plugin that prepares package to become Bitrix d7 module.",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Freezemage",
+      "email": "freezemage0@gmail.com"
+    }
+  ],
+  "require": {
+    "composer-plugin-api": "^2.3"
+  },
+  "require-dev": {
+    "composer/composer": "^2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Freezemage\\BitrixPlugin\\": "src/"
+    }
+  }
+}
