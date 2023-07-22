@@ -76,22 +76,22 @@ class BootstrapModuleCommand extends BaseCommand
         $this->io->ask("Module name [default: {$moduleName}]: ", $moduleName);
 
         $moduleDescription = $package->getDescription();
-        $this->io->ask("Module description [default: {$moduleDescription}]: ", $moduleDescription);
+        $this->io->ask("Module description [default: {$moduleDescription}]: ", (string) $moduleDescription);
 
         $authors = $package->getAuthors();
         if (isset($authors[0])) {
             $author = $authors[0];
 
-            $partnerName = $author['name'] ?? $vendor;
-            $partnerUri = $author['homepage'] ?? $package->getHomepage();
-        } else {
-            $partnerName = $vendor;
-            $partnerUri = $package->getHomepage();
+            $partnerName = $author['name'] ?? null;
+            $partnerUri = $author['homepage'] ?? null;
         }
 
-        $partnerName = $this->io->ask("Partner name [default: {$partnerName}]: ", $partnerName);
+        $partnerName ??= $vendor;
+        $partnerUri ??= $package->getHomepage();
+
+        $partnerName = $this->io->ask("Partner name [default: {$partnerName}]: ", (string) $partnerName);
         $default = !empty($partnerUri) ? "[default: {$partnerUri}]" : '';
-        $partnerUri = $this->io->ask("Partner URI {$default}: ", $partnerUri);
+        $partnerUri = $this->io->ask("Partner URI {$default}: ", (string) $partnerUri);
 
         $meta = new ModuleMeta(
                 $moduleId,
