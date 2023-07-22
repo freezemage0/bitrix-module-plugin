@@ -69,11 +69,11 @@ final class ModuleGenerator
         {
             public function __construct()
             {
-                $this->MODULE_ID = '{$moduleMeta->id}';
-                $this->MODULE_NAME = '{$moduleMeta->name}';
-                $this->MODULE_DESCRIPTION = '{$moduleMeta->description}';
-                $this->PARTNER_NAME = '{$moduleMeta->partnerName}';
-                $this->PARTNER_URI = '{$moduleMeta->partnerUri}';
+                $this->MODULE_ID = {$this->wrap($moduleMeta->id)};
+                $this->MODULE_NAME = {$this->wrap($moduleMeta->name)};
+                $this->MODULE_DESCRIPTION = {$this->wrap($moduleMeta->description)};
+                $this->PARTNER_NAME = {$this->wrap($moduleMeta->partnerName)};
+                $this->PARTNER_URI = {$this->wrap($moduleMeta->partnerUri)};
                 
                 \$version = include __DIR__ . '/version.php';
                 
@@ -97,13 +97,13 @@ final class ModuleGenerator
             {
                 global \$APPLICATION;
                 
-                if (ModuleManager::isModuleInstalled($this->MODULE_ID)) {
-                    \$APPLICATION->ThrowException('Module $this->MODULE_ID is already installed.');
+                if (ModuleManager::isModuleInstalled(\$this->MODULE_ID)) {
+                    \$APPLICATION->ThrowException('Module \$this->MODULE_ID is already installed.');
                     return;
                 }
                 
-                ModuleManager::registerModule($this->MODULE_ID);
-                Loader::includeModule($this->MODULE_ID);
+                ModuleManager::registerModule(\$this->MODULE_ID);
+                Loader::includeModule(\$this->MODULE_ID);
                 
                 // TODO: Implement method body.
             }
@@ -112,13 +112,13 @@ final class ModuleGenerator
             {
                 global \$APPLICATION;
                 
-                if (!ModuleManager::isModuleInstalled($this->MODULE_ID)) {
+                if (!ModuleManager::isModuleInstalled(\$this->MODULE_ID)) {
                     return;
                 }
                 
                 // TODO: Implement method body.
                 
-                ModuleManager::unRegisterModule($this->MODULE_ID);
+                ModuleManager::unRegisterModule(\$this->MODULE_ID);
             }
             
             public function InstallFiles(): void
@@ -146,7 +146,7 @@ final class ModuleGenerator
         
         return [
             'MODULE_VERSION' => '0.0.0',
-            'MODULE_VERSION_DATE' => {$currentTime->format('Y-m-d H:i:s')}
+            'MODULE_VERSION_DATE' => {$this->wrap($currentTime->format('Y-m-d H:i:s'))}
         ];
 
         VERSION;
@@ -174,5 +174,9 @@ final class ModuleGenerator
     public function __call(string $name, array $arguments): string
     {
         return "\$this->{$name}()";
+    }
+
+    private function wrap(string $content): string {
+        return "'{$content}'";
     }
 }
