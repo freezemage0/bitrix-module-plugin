@@ -52,11 +52,7 @@ class BootstrapModuleCommand extends BaseCommand
             $this->io->askAndValidate(
                     "Module ID [default: {$moduleId}]: ",
                     static function (string $answer) use ($moduleId): string {
-                        if (empty($answer)) {
-                            return $moduleId;
-                        }
-
-                        if (!Preg::isMatch(
+                        if (Preg::isMatch(
                                 BootstrapModuleCommand::MODULE_ID_VALIDATION_REGEX,
                                 $answer
                         )) {
