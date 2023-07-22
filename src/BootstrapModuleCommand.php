@@ -8,6 +8,7 @@ use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Pcre\Preg;
 use Exception;
+use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -48,12 +49,16 @@ class BootstrapModuleCommand extends BaseCommand
         );
         try {
             $this->io->askAndValidate(
-                    'Module ID',
-                    static function (string $answer): bool {
-                        return !Preg::isMatch(
+                    "Module ID [default: {$moduleId}",
+                    static function (string $answer): string {
+                        if (!Preg::isMatch(
                                 BootstrapModuleCommand::MODULE_ID_VALIDATION_REGEX,
                                 $answer
-                        );
+                        )) {
+                            throw new InvalidArgumentException("Module ID {$answer} is invalid.");
+                        }
+
+                        return $answer;
                     },
                     3,
                     $moduleId
@@ -66,7 +71,7 @@ class BootstrapModuleCommand extends BaseCommand
         [$vendor, $name] = explode('/', $packageName);
 
         $moduleName = "{$vendor}: {$name}";
-        $this->io->ask('Module name', $moduleName);
+        $this->io->ask("Module name [default: {$moduleName}]", $moduleName);
 
         $moduleDescription = $package->getDescription();
         $this->io->ask('Module description', $moduleDescription);
