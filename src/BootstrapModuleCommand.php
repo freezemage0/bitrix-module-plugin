@@ -45,11 +45,12 @@ class BootstrapModuleCommand extends BaseCommand
         $moduleId = Preg::replace(
                 BootstrapModuleCommand::MODULE_ID_VALIDATION_REGEX,
                 '',
-                $packageName
+                str_replace('/', '.', $packageName)
         );
+
         try {
             $this->io->askAndValidate(
-                    "Module ID [default: {$moduleId}",
+                    "Module ID [default: {$moduleId}]: ",
                     static function (string $answer): string {
                         if (!Preg::isMatch(
                                 BootstrapModuleCommand::MODULE_ID_VALIDATION_REGEX,
