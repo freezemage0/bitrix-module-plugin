@@ -72,10 +72,10 @@ class BootstrapModuleCommand extends BaseCommand
         [$vendor, $name] = explode('/', $packageName);
 
         $moduleName = "{$vendor}: {$name}";
-        $this->io->ask("Module name [default: {$moduleName}]", $moduleName);
+        $this->io->ask("Module name [default: {$moduleName}]: ", $moduleName);
 
         $moduleDescription = $package->getDescription();
-        $this->io->ask('Module description', $moduleDescription);
+        $this->io->ask("Module description [default: {$moduleDescription}]: ", $moduleDescription);
 
         $authors = $package->getAuthors();
         if (isset($authors[0])) {
@@ -88,8 +88,8 @@ class BootstrapModuleCommand extends BaseCommand
             $partnerUri = $package->getHomepage();
         }
 
-        $partnerName = $this->io->ask('Partner name', $partnerName);
-        $partnerUri = $this->io->ask('Partner URI', $partnerUri);
+        $partnerName = $this->io->ask("Partner name [default: {$partnerName}]: ", $partnerName);
+        $partnerUri = $this->io->ask("Partner URI [default: {$partnerUri}]: ", $partnerUri);
 
         $meta = new ModuleMeta(
                 $moduleId,
@@ -106,6 +106,8 @@ class BootstrapModuleCommand extends BaseCommand
                 ]
         );
         if (!$this->io->askConfirmation('Do you confirm generation?')) {
+            $this->io->writeError('Generation cancelled.');
+
             return Command::FAILURE;
         }
 
