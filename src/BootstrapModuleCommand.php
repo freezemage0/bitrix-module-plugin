@@ -12,6 +12,7 @@ use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Path;
 
 
 class BootstrapModuleCommand extends BaseCommand
@@ -113,7 +114,9 @@ class BootstrapModuleCommand extends BaseCommand
 
         $generator = new ModuleGenerator();
         $generator->build(
-                $this->composer->getConfig()->getConfigSource()->getName(),
+                Path::getDirectory(
+                        $this->composer->getConfig()->getConfigSource()->getName()
+                ),
                 $meta
         );
 
