@@ -4,6 +4,7 @@
 namespace Freezemage\BitrixPlugin;
 
 use DateTime;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 
 
@@ -27,6 +28,13 @@ use Symfony\Component\Filesystem\Path;
  */
 final class ModuleGenerator
 {
+    private Filesystem $filesystem;
+
+    public function __construct(Filesystem $filesystem = null)
+    {
+        $this->filesystem = $filesystem ?? new Filesystem();
+    }
+
     public function build(string $modulePath, ModuleMeta $meta): void
     {
         $files = [
@@ -37,7 +45,7 @@ final class ModuleGenerator
 
         foreach ($files as $path => $content) {
             $fullPath = Path::join($modulePath, $path);
-            file_put_contents($fullPath, $content);
+            $this->filesystem->dumpFile($fullPath, $content);
         }
     }
 
