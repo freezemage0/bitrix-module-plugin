@@ -90,7 +90,8 @@ class BootstrapModuleCommand extends BaseCommand
         }
 
         $partnerName = $this->io->ask("Partner name [default: {$partnerName}]: ", $partnerName);
-        $partnerUri = $this->io->ask("Partner URI [default: {$partnerUri}]: ", $partnerUri);
+        $default = !empty($partnerUri) ? "[default: {$partnerUri}]" : '';
+        $partnerUri = $this->io->ask("Partner URI {$default}: ", $partnerUri);
 
         $meta = new ModuleMeta(
                 $moduleId,
@@ -100,13 +101,18 @@ class BootstrapModuleCommand extends BaseCommand
                 $partnerUri
         );
 
+        $modulePath = Path::getDirectory($this->composer->getConfig()->getConfigSource()->getName());
+        $join = Path::join(...);
+
         $this->io->write(
                 [
-                        '<info>Module will be generated with the following configuration</info>',
-                        json_encode($meta),
+                        '<comment>The following files will be overwritten:</comment>',
+                        "<comment>{$join($modulePath, 'install/index.php')}</comment>",
+                        "<comment>{$join($modulePath, 'install/version.php')}</comment>",
+                        "<comment>{$join($modulePath, 'include.php')}</comment>",
                 ]
         );
-        if (!$this->io->askConfirmation('Do you confirm generation?')) {
+        if (!$this->io->askConfirmation('Do you confirm generation? [Y/n]: ')) {
             $this->io->writeError('Generation cancelled.');
 
             return Command::FAILURE;
@@ -114,11 +120,11 @@ class BootstrapModuleCommand extends BaseCommand
 
         $generator = new ModuleGenerator();
         $generator->build(
-                Path::getDirectory(
-                        $this->composer->getConfig()->getConfigSource()->getName()
-                ),
+                $modulePath,
                 $meta
         );
+
+        $this->io->write('<info>Module generation complete.</info>');
 
         return Command::SUCCESS;
     }
