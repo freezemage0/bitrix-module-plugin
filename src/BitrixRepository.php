@@ -4,6 +4,7 @@
 namespace Freezemage\BitrixPlugin;
 
 use Composer\Package\CompletePackage;
+use Composer\Package\Version\VersionParser;
 use Composer\Repository\ArrayRepository;
 use Composer\Util\Filesystem;
 use Symfony\Component\Filesystem\Path;
@@ -34,6 +35,8 @@ class BitrixRepository extends ArrayRepository
             $finder->in($modulePath);
         }
 
+        $normalizer = new VersionParser();
+
         foreach ($finder as $file) {
             $moduleName = $file->getBasename();
 
@@ -45,15 +48,20 @@ class BitrixRepository extends ArrayRepository
                 };
             } else {
                 $versionLoader = static function () use ($file) {
+                    $arModuleVersion = [];
                     include_once Path::join($file->getRealPath(), '/install/version.php');
 
                     return isset($arModuleVersion) ? $arModuleVersion['VERSION'] : null;
                 };
             }
 
-            $version = $versionLoader();
+            $prettyVersion = $versionLoader();
 
-            $package = new CompletePackage("bitrix/{$moduleName}", $version, $version);
+            $package = new CompletePackage(
+                    "bitrix/{$moduleName}",
+                    $normalizer->normalize($prettyVersion),
+                    $prettyVersion
+            );
             $this->addPackage($package);
         }
     }
