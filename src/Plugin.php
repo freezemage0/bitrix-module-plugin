@@ -15,6 +15,13 @@ final class Plugin implements PluginInterface, Capable
 {
     public function activate(Composer $composer, IOInterface $io): void
     {
+        $repositoryManager = $composer->getRepositoryManager();
+        $repository = new BitrixRepository();
+        $repository->bitrixRoot = 'D:\\sdk';
+
+        $repositoryManager->prependRepository($repository);
+
+        $repositoryManager->findPackage('bitrix/main', '^22');
     }
 
     public function deactivate(Composer $composer, IOInterface $io): void
