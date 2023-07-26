@@ -49,7 +49,7 @@ class BitrixRepository extends ArrayRepository
             } else {
                 $versionLoader = static function () use ($file) {
                     $arModuleVersion = [];
-                    include_once Path::join($file->getRealPath(), '/install/version.php');
+                    include Path::join($file->getRealPath(), '/install/version.php');
 
                     return isset($arModuleVersion) ? $arModuleVersion['VERSION'] : null;
                 };
