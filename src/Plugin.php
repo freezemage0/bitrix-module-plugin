@@ -8,9 +8,7 @@ use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Plugin\Capability\CommandProvider as CommandProviderCapability;
 use Composer\Plugin\Capable;
-use Composer\Plugin\PluginBlockedException;
 use Composer\Plugin\PluginInterface;
-use DomainException;
 
 
 final class Plugin implements PluginInterface, Capable

@@ -62,6 +62,7 @@ class BitrixRepository extends ArrayRepository
                     $normalizer->normalize($prettyVersion),
                     $prettyVersion
             );
+            $package->setType('metapackage');
             $this->addPackage($package);
         }
     }
