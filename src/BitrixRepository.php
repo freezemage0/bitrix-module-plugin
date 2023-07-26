@@ -18,7 +18,7 @@ class BitrixRepository extends ArrayRepository
 
     protected function initialize(): void
     {
-        $finder = Finder::create()->ignoreVCS(true)->ignoreDotFiles(true)->depth(1);
+        $finder = Finder::create()->ignoreVCS(true)->ignoreDotFiles(true)->depth(1)->directories();
 
         foreach (BitrixRepository::MODULE_HOLDERS as $holder) {
             $modulePath = Path::join($this->bitrixRoot, $holder, 'modules');
