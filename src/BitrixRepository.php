@@ -5,6 +5,7 @@ namespace Freezemage\BitrixPlugin;
 
 use Composer\Package\CompletePackage;
 use Composer\Repository\ArrayRepository;
+use Composer\Util\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
 
@@ -19,7 +20,11 @@ class BitrixRepository extends ArrayRepository
     {
         $modules = [];
         foreach (BitrixRepository::MODULE_HOLDERS as $holder) {
-            $modules[] = Path::join($this->bitrixRoot, $holder, 'modules');
+            $modulePath = Path::join($this->bitrixRoot, $holder, 'modules');
+            if (!Filesystem::isReadable($modulePath)) {
+                continue;
+            }
+            $modules[] = $modulePath;
         }
 
         $finder = Finder::create()
