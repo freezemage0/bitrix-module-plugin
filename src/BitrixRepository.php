@@ -39,12 +39,13 @@ class BitrixRepository extends ArrayRepository
 
             if ($moduleName === 'main') {
                 $versionLoader = static function () use ($file) {
-                    include Path::join($file->getRealPath(), '/classes/general/version.php');
+                    include_once Path::join($file->getRealPath(), '/classes/general/version.php');
+
                     return defined('SM_VERSION') ? SM_VERSION : null;
                 };
             } else {
                 $versionLoader = static function () use ($file) {
-                    include Path::join($file->getRealPath(), '/install/version.php');
+                    include_once Path::join($file->getRealPath(), '/install/version.php');
 
                     return isset($arModuleVersion) ? $arModuleVersion['VERSION'] : null;
                 };
@@ -53,7 +54,6 @@ class BitrixRepository extends ArrayRepository
             $version = $versionLoader();
 
             $package = new CompletePackage("bitrix/{$moduleName}", $version, $version);
-            var_dump($package->getName());
             $this->addPackage($package);
         }
     }
