@@ -30,7 +30,7 @@ class BitrixRepository extends ArrayRepository
 
 
         foreach ($finder as $directory) {
-            var_dump($directory);
+            var_dump($directory->getRealPath());
         }
 
         $mainModule = new CompletePackage('bitrix/main', '22.500.100', '22.500.100');
