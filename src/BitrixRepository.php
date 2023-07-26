@@ -18,7 +18,13 @@ class BitrixRepository extends ArrayRepository
 
     protected function initialize(): void
     {
-        $finder = Finder::create()->ignoreVCS(true)->ignoreDotFiles(true)->depth(0)->directories();
+        parent::initialize();
+
+        $finder = Finder::create()
+                ->ignoreVCS(true)
+                ->ignoreDotFiles(true)
+                ->depth(0)
+                ->directories();
 
         foreach (BitrixRepository::MODULE_HOLDERS as $holder) {
             $modulePath = Path::join($this->bitrixRoot, $holder, 'modules');
@@ -28,13 +34,27 @@ class BitrixRepository extends ArrayRepository
             $finder->in($modulePath);
         }
 
+        foreach ($finder as $file) {
+            $moduleName = $file->getBasename();
 
-        foreach ($finder as $directory) {
-            var_dump($directory->getRealPath());
+            if ($moduleName === 'main') {
+                $versionLoader = static function () use ($file) {
+                    include Path::join($file->getRealPath(), '/classes/general/version.php');
+                    return defined('SM_VERSION') ? SM_VERSION : null;
+                };
+            } else {
+                $versionLoader = static function () use ($file) {
+                    include Path::join($file->getRealPath(), '/install/version.php');
+
+                    return isset($arModuleVersion) ? $arModuleVersion['VERSION'] : null;
+                };
+            }
+
+            $version = $versionLoader();
+
+            $package = new CompletePackage("bitrix/{$moduleName}", $version, $version);
+            var_dump($package->getName());
+            $this->addPackage($package);
         }
-
-        $mainModule = new CompletePackage('bitrix/main', '22.500.100', '22.500.100');
-        $mainModule->setDescription('Kernel :)');
-        $this->addPackage($mainModule);
     }
 }
